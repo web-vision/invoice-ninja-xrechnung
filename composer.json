@@ -10,6 +10,7 @@
             "email": "bushra@web-vision.de"
         }
     ],
+    "minimum-stability": "stable",
     "require": {
         "easybill/zugferd-php": "^1.7",
         "cleverit/ubl_invoice": "^1.3"
