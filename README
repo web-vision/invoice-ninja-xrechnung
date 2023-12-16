@@ -1,0 +1,22 @@
+## Invoice Ninja
+
+#### Create Access Token
+
+Go to https://git.web-vision.io/-/profile/personal_access_tokens and Create a token with api scope checked.
+
+```
+composer --global config http-basic.git.web-vision.io gitlab-ci-token <your-gitlab-personal-access-token>
+```
+
+Now you add this 
+
+```
+composer config repositories.34 composer "https://git.web-vision.io/api/v4/group/34/-/packages/composer/packages.json"
+
+```
+
+#### old remove
+
+Add authorization directly to composer repository config:
+
+ https://__token__:<personal_token>@git.web-vision.io/api/v4/group/34/-/packages/composer/packages.json
