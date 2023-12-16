@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('client', function (Blueprint $table) {
+        Schema::table('clients', function (Blueprint $table) {
             $table->string('xrechnung_leadagentur')->nullable();
             $table->string('xrechnung_ansprechpartner')->nullable();
             $table->string('xrechnung_leitweg_id');
@@ -23,7 +23,7 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::table('client', function (Blueprint $table) {
+        Schema::table('clients', function (Blueprint $table) {
             $table->dropColumn('xrechnung_leadagentur');
             $table->dropColumn('xrechnung_ansprechpartner');
             $table->dropColumn('xrechnung_leitweg_id');
