@@ -22,10 +22,12 @@
     },
     "scripts": {
         "post-install-cmd": [
-            "@php artisan migrate --path=vendor/webvision/ninja-xrechnung/src/database/migrations"
+            "Illuminate\\Foundation\\ComposerScripts::postInstall",
+            "php artisan optimize"
         ],
         "post-update-cmd": [
-            "@php artisan migrate --path=vendor/webvision/ninja-xrechnung/src/database/migrations"
+            "Illuminate\\Foundation\\ComposerScripts::postUpdate",
+            "php artisan optimize"
         ]
     }
 }
