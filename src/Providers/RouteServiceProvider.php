@@ -11,9 +11,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $this->loadRoutesFrom(__DIR__.'/../../routes/api.php');
         Log::warning("Testing");
-        $this->publishes([
-            __DIR__.'/database/migrations/' => database_path('migrations')
-        ], 'migrations');
+        $this->loadMigrationsFrom(__DIR__ . '/database/migrations');
 
         Log::warning(__DIR__);
     }

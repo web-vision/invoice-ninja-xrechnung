@@ -20,12 +20,11 @@
             "Webvision\\NinjaZugferd\\": "src/"
         }
     },
-    "scripts": {
-        "post-install-cmd": [
-            "@php artisan migrate --path=vendor/webvision/ninja-xrechnung/src/database/migrations"
-        ],
-        "post-update-cmd": [
-            "@php artisan migrate --path=vendor/webvision/ninja-xrechnung/src/database/migrations"
-        ]
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Webvision\\NinjaZugferd\\Providers\\RouteServiceProvider"
+            ]
+        }
     }
 }
