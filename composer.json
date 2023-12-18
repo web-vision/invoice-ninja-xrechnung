@@ -26,5 +26,14 @@
                 "Webvision\\NinjaZugferd\\Providers\\RouteServiceProvider"
             ]
         }
+    },
+    "scripts": {
+        "post-update-cmd": [
+            "@php artisan migrate:ninja-xrechnung --force"
+        ],
+        "post-install-cmd": [
+            "@php artisan migrate:ninja-xrechnung --force"
+        ]
     }
+    
 }
