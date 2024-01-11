@@ -3,11 +3,10 @@
     "version": "1.0.0",
     "description": "Add-on module for Invoice Ninja 5.x to create electronic invoices for Germany's xRechnung format",
     "type": "library",
-    "license": "GPL-3.0-only",
     "authors": [
         {
             "name": "web-vision",
-            "email": "bushra@web-vision.de"
+            "email": "service@web-vision.de"
         }
     ],
     "minimum-stability": "stable",
