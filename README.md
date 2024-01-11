@@ -10,4 +10,4 @@ See [Changelog](CHANGELOG.md) for all the release notes.
 
 ## Documentation
 
-For more details please see [docs]https://github.com/web-vision/invoice-ninja-xrechnung/wiki)
+For more details please see [docs](https://github.com/web-vision/invoice-ninja-xrechnung/wiki)
