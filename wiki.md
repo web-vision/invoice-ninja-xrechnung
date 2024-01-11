@@ -54,7 +54,7 @@ Ensure that you added all the highlighted fields in the Invoice. Navigate to **I
 ## Installation
 In the root directory run the following commands using the command line
 
-`composer update webvision/ninja-xrechnung --no-cache`
+`composer update webvision/invoice-ninja-xrechnung --no-cache`
 
 `php artisan cache:clear && php artisan config:clear && php artisan route:clear`
 
