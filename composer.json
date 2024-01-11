@@ -1,6 +1,6 @@
 {
     "name": "webvision/ninja-xrechnung",
-    "version": "1.0.1",
+    "version": "1.0.0",
     "description": "A module to exchange UBL generator with zugferd in invoice ninja",
     "type": "library",
     "license": "GPL-3.0-only",
@@ -19,14 +19,6 @@
         "psr-4": {
             "Webvision\\NinjaZugferd\\": "src/"
         }
-    },
-    "scripts": {
-        "post-update-cmd": [
-            "@php artisan migrate:ninja-xrechnung --force"
-        ],
-        "post-install-cmd": [
-            "@php artisan migrate:ninja-xrechnung --force"
-        ]
     },
     "extra": {
         "laravel": {
