@@ -177,9 +177,9 @@ class CreateZugferd implements ShouldQueue
         //888-80140WV01-64
 
         $leitwegIdField = $this->getCustomValueIdByLabel('xRechnung Leitweg-ID|single_line_text', 'client');
-
-        $leitwegId = $client[$leitwegIdField];
-
+        if ($leitwegIdField) {
+            $leitwegId = $client[$leitwegIdField];
+        }
         $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeAgreement->buyerReference = $leitwegId; //$client->id_number;
 
         $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeAgreement->sellerTradeParty = $sellerTradeParty = new TradeParty();
@@ -192,7 +192,9 @@ class CreateZugferd implements ShouldQueue
         $sellerTradeParty->definedTradeContact = new TradeContact();
         $sellerTradeParty->definedTradeContact->personName = 'Admin'; //Admin?
         $sellerTradeParty->definedTradeContact->telephoneUniversalCommunication = new UniversalCommunication();
-        $sellerTradeParty->definedTradeContact->telephoneUniversalCommunication->completeNumber = $company->settings->phone; //@wvtodo
+        if($company->settings->phone){
+            $sellerTradeParty->definedTradeContact->telephoneUniversalCommunication->completeNumber = $company->settings->phone; 
+        }
         $sellerTradeParty->definedTradeContact->emailURIUniversalCommunication = new UniversalCommunication();
         $sellerTradeParty->definedTradeContact->emailURIUniversalCommunication->uriid = Id::create($user->email);
 
@@ -220,9 +222,10 @@ class CreateZugferd implements ShouldQueue
         $buyerTradeParty->postalTradeAddress->countryCode = $client->country->iso_3166_2;
 
         //$xInvoice->supplyChainTradeTransaction->applicableHeaderTradeAgreement->specifiedProcuringProject = ProcuringProject::create('1234', 'Projekt');
-
-        $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeAgreement->buyerOrderReferencedDocument = (new ReferencedDocument())->create($invoice->po_number);//@wvtodo IssuerAssignedID? checkfix
-
+        if($invoice->po_number){
+            $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeAgreement->buyerOrderReferencedDocument = (new ReferencedDocument())->create($invoice->po_number);//@wvtodo IssuerAssignedID? checkfix
+        }
+        
         $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeDelivery = new HeaderTradeDelivery();
         $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeDelivery->shipToTradeParty = $buyerTradeParty;
         $xInvoice->supplyChainTradeTransaction->applicableHeaderTradeDelivery->chainEvent = new SupplyChainEvent();
