@@ -3,8 +3,6 @@
 namespace Webvision\NinjaZugferd\Providers;
 
 use Illuminate\Support\ServiceProvider;
-use Illuminate\Support\Facades\Log;
-use Webvision\NinjaZugferd\Commands\MigrateNinjaxRechnung;
 
 class RouteServiceProvider extends ServiceProvider
 {
