@@ -103,8 +103,11 @@ class EmailEntity implements ShouldQueue
     public function handle()
     {
         /* Don't fire emails if the company is disabled */
-        if ($this->company->is_disabled)
+        if ($this->company->is_disabled){
             return true;
+        }
+
+        $this->email_entity_builder = $this->resolveEmailBuilder();
 
         /* Set DB */
         MultiDB::setDB($this->company->db);
@@ -114,26 +117,24 @@ class EmailEntity implements ShouldQueue
         App::setLocale($this->invitation->contact->preferredLocale());
         $t->replace(Ninja::transformTranslations($this->settings));
 
-        $nmo = new NinjaMailerObject;
-        $nmo->mailable = new TemplateEmail($this->email_entity_builder, $this->invitation->contact, $this->invitation);
-        $nmo->company = $this->company;
-        $nmo->settings = $this->settings;
-        $nmo->to_user = $this->invitation->contact;
-        $nmo->entity_string = $this->entity_string;
-        $nmo->invitation = $this->invitation;
-        $nmo->reminder_template = $this->reminder_template;
-        $nmo->entity = $this->entity;
+        /* Mark entity sent */
+        $this->entity->service()->markSent()->save();
 
+        $nmo = new NinjaMailerObject;
+        $nmo->mailable = new TemplateEmail($this->email_entity_builder, $this->invitation->contact->withoutRelations(), $this->invitation->withoutRelations());
+        $nmo->company = $this->company->withoutRelations();
+        $nmo->settings = $this->settings;
+        $nmo->to_user = $this->invitation->contact->withoutRelations();
+        $nmo->entity_string = $this->entity_string;
+        $nmo->invitation = $this->invitation->withoutRelations();
+        $nmo->reminder_template = $this->reminder_template;
+        $nmo->entity = $this->entity->withoutRelations();
+        
         /**
          * Append file
          */
         //$nmo->mailable->attachData('Test', $this->invitation->invoice->getFileName('xml'));
-
-
-        NinjaMailerJob::dispatchNow($nmo);
-
-        /* Mark entity sent */
-        $this->entity->service()->markSent()->save();
+        NinjaMailerJob::dispatch($nmo);
     }
 
     private function resolveEntityString() :string
