@@ -1,6 +1,6 @@
 {
     "name": "webvision/invoice-ninja-xrechnung",
-    "version": "1.0.2",
+    "version": "1.0.3",
     "description": "Add-on module for Invoice Ninja 5.x to create electronic invoices for Germany's xRechnung format",
     "type": "library",
     "license": "GPL-3.0-only",

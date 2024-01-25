@@ -23,6 +23,7 @@ use App\Utils\TemplateEngine;
 use Illuminate\Bus\Queueable;
 use Illuminate\Mail\Mailable;
 use Illuminate\Queue\SerializesModels;
+use App\Utils\Ninja;
 
 class TemplateEmail extends Mailable
 {
@@ -87,52 +88,64 @@ class TemplateEmail extends Mailable
 
         $this->from(config('mail.from.address'), $email_from_name);
 
-        if (strlen($settings->bcc_email) > 1)
-            $this->bcc(explode(",",str_replace(" ", "", $settings->bcc_email)));//remove whitespace if any has been inserted.
+        if (strlen($settings->bcc_email) > 1) {
+            if (Ninja::isHosted()) {
 
-        $this->subject($this->build_email->getSubject())
-            ->text('email.template.plain', [
-                'body' => $this->build_email->getBody(),
-                'footer' => $this->build_email->getFooter(),
-                'whitelabel' => $this->client->user->account->isPaid() ? true : false,
-                'settings' => $settings,
-            ])
-            ->view($template_name, [
-                'greeting' => ctrans('texts.email_salutation', ['name' => $this->contact->present()->name()]),
-                'body' => $this->build_email->getBody(),
-                'footer' => $this->build_email->getFooter(),
-                'view_link' => $this->build_email->getViewLink(),
-                'view_text' => $this->build_email->getViewText(),
-                'title' => '',
-                'signature' => $signature,
-                'settings' => $settings,
-                'company' => $company,
-                'whitelabel' => $this->client->user->account->isPaid() ? true : false,
-                'logo' => $this->company->present()->logo(),
-            ])
-            ->withSwiftMessage(function ($message) use($company){
-                $message->getHeaders()->addTextHeader('Tag', $company->company_key);
-                $message->invitation = $this->invitation;
-            });
+                if($company->account->isPaid()) {
+                    $bccs = explode(',', str_replace(' ', '', $settings->bcc_email));
+                    $this->bcc(array_slice($bccs, 0, 5));
+                }
 
-        foreach ($this->build_email->getAttachments() as $file) {
-
-            if(is_string($file))
-                $this->attach($file);
-            elseif(is_array($file))
-                $this->attach($file['path'], ['as' => $file['name'], 'mime' => $file['mime']]);
-
+            } else {
+                $this->bcc(explode(',', str_replace(' ', '', $settings->bcc_email)));
+            }
         }
 
-        if($this->invitation && $this->invitation->invoice && $settings->ubl_email_attachment && $this->company->account->hasFeature(Account::FEATURE_DOCUMENTS)){
+        $this->subject(str_replace("<br>", "", $this->build_email->getSubject()))
+        ->text('email.template.text', [
+            'text_body' => $this->build_email->getTextBody(),
+            'whitelabel' => $this->client->user->account->isPaid() ? true : false,
+            'settings' => $settings,
+        ])
+        ->view($template_name, [
+            'greeting' => ctrans('texts.email_salutation', ['name' => $this->contact->present()->name()]),
+            'body' => $this->build_email->getBody(),
+            'footer' => $this->build_email->getFooter(),
+            'view_link' => $this->build_email->getViewLink(),
+            'view_text' => $this->build_email->getViewText(),
+            'title' => '',
+            'signature' => $signature,
+            'settings' => $settings,
+            'company' => $company,
+            'whitelabel' => $this->client->user->account->isPaid() ? true : false,
+            'logo' => $this->company->present()->logo($settings),
+            'links' => $this->build_email->getAttachmentLinks(),
+        ]);
 
-            $ubl_string = CreateZugferd::dispatchNow($this->invitation->invoice);
+        foreach ($this->build_email->getAttachments() as $file) {
+            if (array_key_exists('file', $file)) {
+                $this->attachData(base64_decode($file['file']), $file['name']);
+            } else {
+                $this->attach($file['path'], ['as' => $file['name'], 'mime' => null]);
+            }
+        }
+
+        if($this->invitation && $this->invitation->invoice && $settings->ubl_email_attachment && $this->company->account->hasFeature(Account::FEATURE_PDF_ATTACHMENT)){
+            $ubl_string = (new CreateZugferd($this->invitation->invoice))->handle();
 
             nlog($ubl_string);
 
             if($ubl_string)
                 $this->attachData($ubl_string, $this->invitation->invoice->getFileName('xml'));
 
+        }
+        if ($this->invitation && $this->invitation->invoice && $this->invitation->invoice->client->getSetting('enable_e_invoice') && $this->company->account->hasFeature(Account::FEATURE_PDF_ATTACHMENT)) {
+            $xml_string = $this->invitation->invoice->service()->getEInvoice($this->invitation->contact);
+
+            if($xml_string) {
+                $this->attachData($xml_string, $this->invitation->invoice->getEFileName("xml"));
+            }
+        
         }
 
         return $this;
