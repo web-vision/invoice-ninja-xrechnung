@@ -13,7 +13,7 @@
     "minimum-stability": "stable",
     "require": {
         "easybill/zugferd-php": "^1.7",
-        "cleverit/ubl_invoice": "^1.3"
+        "jms/serializer": "3.29.1"
     },
     "autoload": {
         "psr-4": {
