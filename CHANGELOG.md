@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 ### Added 
 - Add support for Invoice Ninja version 5.8.28 
 
+### Fixed 
+- Fix the invoice format issue.
+
 ## [1.0.5]
 ### Fixed 
 - Fix the version constraint in composer.
