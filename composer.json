@@ -13,10 +13,7 @@
     "minimum-stability": "stable",
     "require": {
         "easybill/zugferd-php": "^1.7",
-        "jms/serializer": "3.29.1"
-    },
-    "conflict": {
-        "jms/serializer": "3.30.0"
+        "doctrine/annotations": "^1.14 || ^2.0"
     },
     "autoload": {
         "psr-4": {
